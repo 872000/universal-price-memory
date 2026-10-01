@@ -1,0 +1,70 @@
+# Broad, everyday grocery coverage for weekly discovery.
+# Keep terms general so Woolworths can return its current most relevant products.
+
+milk
+bread
+eggs
+butter
+cheese
+yoghurt
+chicken
+beef
+fish
+fruit
+vegetables
+rice
+pasta
+cereal
+coffee
+tea
+toilet paper
+laundry detergent
+dishwashing liquid
+household cleaning
+snacks
+frozen food
+canned food
+pet food
+cheddar dippers
+gonutz
+dip crackers
+kids snacks
+lunchbox snacks
+protein bars
+chocolate bars
+ice cream
+frozen meals
+frozen pizza
+chips
+crackers
+biscuits
+chocolate
+juice
+soft drink
+sparkling water
+flour
+sugar
+oil
+sauce
+noodles
+beans
+tomatoes
+tuna
+salmon
+bacon
+sausages
+ham
+lettuce
+tomatoes fresh
+potatoes
+apples
+bananas
+oranges
+berries
+cat food
+dog food
+baby food
+nappies
+shampoo
+soap
+toothpaste

@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1f7a4d" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta
+      name="description"
+      content="Track current and historical Woolworths New Zealand product prices."
+    />
+    <title>Woolworths NZ Price Tracker</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icons/icon-192.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <link rel="stylesheet" href="./styles.css?v=6" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Woolworths New Zealand</p>
+          <h1 data-i18n="appTitle">商品价格追踪</h1>
+          <p class="data-source" id="dataSourceLabel">当前显示的是 demo data</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="secondary-button install-button" id="installButton" type="button" hidden>
+            <span aria-hidden="true">+</span>
+            <span data-i18n="installApp">安装应用</span>
+          </button>
+          <button class="icon-button" id="settingsButton" type="button" aria-label="设置" title="设置">
+            <span aria-hidden="true">⚙</span>
+          </button>
+          <button class="icon-button" id="exportButton" type="button" aria-label="导出关注清单" title="导出关注清单">
+            <span aria-hidden="true">↓</span>
+          </button>
+          <button class="primary-button" id="seedWatchButton" type="button" data-i18n="seedWatch">生成低价关注</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="catalog-panel" aria-label="商品列表" data-i18n-attr="aria-label:catalogLabel">
+          <div class="toolbar">
+            <label class="search-box">
+              <span aria-hidden="true">⌕</span>
+              <input id="searchInput" type="search" placeholder="搜索商品、品牌、分类" autocomplete="off" />
+            </label>
+            <select id="categorySelect" aria-label="分类" data-i18n-attr="aria-label:category">
+              <option value="all">全部分类</option>
+            </select>
+          </div>
+
+          <div class="metrics-strip" aria-label="价格概览" data-i18n-attr="aria-label:metricsLabel">
+            <div>
+              <span id="trackedCount">0</span>
+              <small data-i18n="productsMetric">商品</small>
+            </div>
+            <div>
+              <span id="dealCount">0</span>
+              <small data-i18n="nearLowMetric">接近低价</small>
+            </div>
+            <div>
+              <span id="pointsCount">0</span>
+              <small data-i18n="pointsMetric">积分活动</small>
+            </div>
+          </div>
+
+          <section class="specials-section" aria-labelledby="specialsTitle">
+            <div class="section-title specials-heading">
+              <h3 id="specialsTitle" data-i18n="weeklySpecials">本周特价</h3>
+              <span id="specialsCount">0</span>
+            </div>
+            <div class="special-category-tabs" id="specialCategoryTabs" role="tablist" aria-label="特价分类"></div>
+            <div class="special-list" id="specialList" aria-live="polite"></div>
+          </section>
+
+          <div class="catalog-controls">
+            <div class="segmented" role="group" aria-label="排序" data-i18n-attr="aria-label:sortLabel">
+              <button class="active" data-sort="deal" type="button" data-i18n="sortDeal">划算</button>
+              <button data-sort="drop" type="button" data-i18n="sortDrop">降价</button>
+              <button data-sort="name" type="button" data-i18n="sortName">名称</button>
+            </div>
+            <div class="catalog-filter-checks">
+              <label class="compact-check">
+                <input id="inStockOnlyInput" type="checkbox" checked />
+                <span data-i18n="inStockOnly">只看有货</span>
+              </label>
+              <label class="compact-check">
+                <input id="dealsOnlyInput" type="checkbox" />
+                <span data-i18n="dealsOnly">只看低价</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="product-list" id="productList" aria-live="polite"></div>
+        </section>
+
+        <section
+          class="detail-panel"
+          id="detailPanel"
+          role="dialog"
+          aria-modal="true"
+          aria-label="商品详情"
+          data-i18n-attr="aria-label:detailLabel"
+          hidden
+        >
+          <div class="detail-header">
+            <div class="product-hero" id="heroImage" aria-hidden="true"></div>
+            <div>
+              <p class="eyebrow" id="selectedBrand">品牌</p>
+              <h2 id="selectedName" data-i18n="selectProduct">选择商品</h2>
+              <p class="muted" id="selectedMeta" data-i18n="selectProductHint">历史价格和提醒会显示在这里</p>
+            </div>
+            <button class="icon-button detail-close" id="closeDetailButton" type="button" aria-label="关闭" title="关闭">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+
+          <div class="price-board">
+            <div>
+              <small data-i18n="currentPrice">当前价</small>
+              <strong id="currentPrice">$0.00</strong>
+            </div>
+            <div>
+              <small data-i18n="historicalLow">历史最低</small>
+              <strong id="lowestPrice">$0.00</strong>
+            </div>
+            <div>
+              <small data-i18n="average90">90 天均价</small>
+              <strong id="averagePrice">$0.00</strong>
+            </div>
+            <div>
+              <small data-i18n="suggestion">建议</small>
+              <strong id="buySignal">-</strong>
+            </div>
+          </div>
+
+          <div class="detail-actions">
+            <button
+              class="ai-launch-button"
+              id="openAiButton"
+              type="button"
+              aria-haspopup="dialog"
+              aria-expanded="false"
+            >
+              <span class="ai-launch-icon" aria-hidden="true">✦</span>
+              <span data-i18n="aiJudgement">AI 购物判断</span>
+            </button>
+          </div>
+
+          <div class="chart-shell">
+            <div class="section-title">
+              <h3 data-i18n="priceHistory">价格历史</h3>
+              <span id="chartRange" data-i18n="days90">90 天</span>
+            </div>
+            <svg id="priceChart" viewBox="0 0 760 260" role="img" aria-label="价格历史折线图" data-i18n-attr="aria-label:chartLabel"></svg>
+          </div>
+
+          <div class="detail-grid">
+            <form class="watch-form" id="watchForm">
+              <div class="section-title">
+                <h3 data-i18n="priceAlert">低价提醒</h3>
+                <span id="watchStatus">未关注</span>
+              </div>
+              <label>
+                <span data-i18n="targetPrice">目标价</span>
+                <input id="targetPriceInput" type="number" min="0" step="0.01" />
+              </label>
+              <label class="switch-row">
+                <span data-i18n="autoHistoricalLow">历史最低自动提醒</span>
+                <input id="historicalLowInput" type="checkbox" />
+              </label>
+              <button class="primary-button" type="submit" data-i18n="saveWatch">保存关注</button>
+            </form>
+
+            <aside class="planner-panel">
+              <div class="section-title">
+                <h3 data-i18n="pointsPlanner">积分规划</h3>
+                <span id="plannerTotal">$0.00</span>
+              </div>
+              <div id="plannerList" class="planner-list"></div>
+            </aside>
+          </div>
+        </section>
+
+        <aside class="watchlist-panel" aria-label="关注清单" data-i18n-attr="aria-label:watchlist">
+          <div class="section-title">
+            <h3 data-i18n="watchlist">关注清单</h3>
+            <span id="watchCount">0</span>
+          </div>
+          <div id="watchList" class="watch-list"></div>
+        </aside>
+      </main>
+    </div>
+
+    <div class="detail-backdrop" id="detailBackdrop" hidden></div>
+
+    <div class="ai-overlay" id="aiOverlay" hidden>
+      <section class="ai-dialog" role="dialog" aria-modal="true" aria-labelledby="aiDialogTitle">
+        <div class="section-title">
+          <div>
+            <h3 id="aiDialogTitle" data-i18n="aiJudgement">AI 购物判断</h3>
+            <span data-i18n="localRules">本地规则版</span>
+          </div>
+          <button class="icon-button" id="closeAiButton" type="button" aria-label="关闭" title="关闭">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div id="aiSummary" class="ai-summary"></div>
+      </section>
+    </div>
+
+    <div class="settings-overlay" id="settingsOverlay" hidden>
+      <div class="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <div class="section-title">
+          <h3 id="settingsTitle" data-i18n="settings">设置</h3>
+          <button class="icon-button" id="closeSettingsButton" type="button" aria-label="关闭" title="关闭">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="settings-row">
+          <div>
+            <strong data-i18n="language">语言</strong>
+            <small data-i18n="languageHint">切换界面显示语言</small>
+          </div>
+          <div class="segmented language-toggle" role="group" aria-label="语言">
+            <button class="active" data-lang="zh" type="button">中文</button>
+            <button data-lang="en" type="button">English</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./frontend/app.mjs?v=6"></script>
+  </body>
+</html>

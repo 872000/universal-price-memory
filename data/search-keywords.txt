@@ -1,0 +1,7 @@
+# One Woolworths NZ search keyword per line.
+# Blank lines and comments are ignored.
+
+toilet paper
+milk
+rice
+coffee

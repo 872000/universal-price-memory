@@ -1,0 +1,7 @@
+# One Woolworths NZ product URL or stockcode per line.
+# Blank lines and comments are ignored.
+
+https://www.woolworths.co.nz/shop/productdetails?stockcode=808766&name=cotton-softs-toilet-paper-12pk-3-ply-posh
+
+# Raw stockcode also works:
+# 808766

@@ -1,0 +1,28 @@
+{
+  "name": "woolworths-nz-price-tracker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Woolworths NZ price history tracker MVP with SQLite snapshots.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "init-db": "node scripts/init-db.js",
+    "dev": "node server.js",
+    "collect": "node scripts/collect-woolworths-prices.js",
+    "discover": "node scripts/discover-products.js",
+    "discover:weekly": "node scripts/discover-products.js --file data/search-keywords-weekly.txt --limit 15 --delay 700",
+    "discover:expanded": "node scripts/discover-products.js --file data/search-keywords-weekly.txt --limit 15 --pages 3 --delay 700 --summary-only",
+    "collect:batch": "node scripts/collect-batch.js",
+    "collect:weekly": "node scripts/collect-batch.js --file data/watch-products.txt --weekly",
+    "weekly": "node scripts/run-weekly.js",
+    "db:backfill-categories": "node scripts/backfill-product-categories.js",
+    "db:backfill-sizes": "node scripts/backfill-product-sizes.js",
+    "db:audit": "node scripts/audit-product-data.js",
+    "db:check": "node scripts/db-check.js",
+    "check": "node scripts/check-code.js",
+    "test": "node --test",
+    "quality": "npm run check && npm test"
+  }
+}
