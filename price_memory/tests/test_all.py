@@ -89,6 +89,16 @@ def test_genuine_sale_was_price_check():
     assert any("skepticism" in r for r in shady["reasons"])
 
 
+def test_genuine_sale_suspicious_was_price_still_reports_real_discount():
+    # A bogus was-price should be flagged AND still tell the user the real
+    # discount against the observed typical price.
+    history = [{"price": 10.0, "captured_at": f"2026-08-{i + 1:02d}T12:00:00Z"} for i in range(20)]
+    result = is_genuine_sale(history, 9.0, claimed_was_price=25.0)
+    assert result["was_price_suspicious"], result
+    assert any("skepticism" in r for r in result["reasons"])
+    assert any("real" in r and "discount is 10%" in r for r in result["reasons"]), result["reasons"]
+
+
 def test_capture_parse_and_import():
     store = make_store()
     good = (
@@ -146,6 +156,7 @@ TESTS = [
     test_store_roundtrip,
     test_scoring_labels,
     test_genuine_sale_was_price_check,
+    test_genuine_sale_suspicious_was_price_still_reports_real_discount,
     test_capture_parse_and_import,
     test_alerts,
     test_utcnow_iso,

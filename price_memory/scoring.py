@@ -241,7 +241,7 @@ def is_genuine_sale(
                 f"last {window_days} days (max seen ${max(prices):.2f}) — "
                 "treat the advertised discount with skepticism."
             )
-        elif score.median_price:
+        if score.median_price:
             real_discount = 100.0 * (score.median_price - score.current_price) / score.median_price
             reasons.append(
                 f"Against the typical price (${score.median_price:.2f}) the real "
